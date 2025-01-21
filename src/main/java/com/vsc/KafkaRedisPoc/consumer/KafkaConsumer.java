@@ -21,6 +21,7 @@ public class KafkaConsumer {
         this.redisTemplate = redisTemplate;
     }
 
+    //kafka message listener
     @KafkaListener(topics = "sample_topic",
             groupId = "group_id")
 
@@ -28,12 +29,14 @@ public class KafkaConsumer {
     public void consume(@Payload String message,
                         @Header(KafkaHeaders.OFFSET) Long offset,
                         @Header(KafkaHeaders.RECEIVED_PARTITION) int partition) {
-        // Print statement
+        // Print statement for listened kafka message
         System.out.println("message = " + message + " offset = "+ offset + " partition = "+ partition);
 
+        //creating object for pushing on stream
         Map<Object, Object> objectObjectMap = new HashMap<>();
         objectObjectMap.put(offset, message);
 
+        //pushing on redis stream
         redisTemplate.opsForStream().add(offset.toString(), objectObjectMap);
         System.out.println("done on redis stream");
     }
