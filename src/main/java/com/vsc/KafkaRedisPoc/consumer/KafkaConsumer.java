@@ -37,7 +37,8 @@ public class KafkaConsumer {
         objectObjectMap.put(offset, message);
 
         //pushing on redis stream
-        redisTemplate.opsForStream().add(offset.toString(), objectObjectMap);
+        String key = "localKey";
+        redisTemplate.opsForStream().add(key, objectObjectMap);
         System.out.println("done on redis stream");
     }
 }
